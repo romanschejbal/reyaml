@@ -1,0 +1,19 @@
+{
+  "name": "ReYaml",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "esy": { "build": "refmterr dune build #{self.name}.exe" },
+  "dependencies": {
+    "@esy-ocaml/reason": "^3.3.7",
+    "@opam/dune": "*",
+    "@opam/merlin": "3.2.2",
+    "@opam/yaml": "0.2.1",
+    "ocaml": "~4.6.0",
+    "refmterr": "*"
+  },
+  "resolutions": {
+    "@opam/menhir": "20171013",
+    "@opam/re": "1.8.0"
+  }
+}
