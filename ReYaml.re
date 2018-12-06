@@ -1,3 +1,6 @@
+let source = Sys.argv[1];
+let env = Array.length(Sys.argv) > 2 ? Sys.argv[2] : "";
+
 let loadFile = filename => {
   let ic = open_in(filename);
   let len = in_channel_length(ic);
@@ -12,8 +15,6 @@ let loadYamls = filename =>
   |> List.map(Yaml.of_string_exn);
 
 let loadYaml = filename => List.hd(loadYamls(filename));
-
-let config = loadYamls("test.yml");
 
 let rec parse = (currentFilename, value) => {
   let parseObject = obj =>
@@ -48,8 +49,8 @@ let rec parse = (currentFilename, value) => {
 };
 
 let output =
-  config
-  |> List.map(parse("test.yml"))
+  loadYamls(source)
+  |> List.map(parse(source))
   |> List.map(Yaml.to_string_exn)
   |> String.concat("---\n");
 
