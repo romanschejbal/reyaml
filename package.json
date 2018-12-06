@@ -1,19 +1,27 @@
 {
-  "name": "ReYaml",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "esy": { "build": "refmterr dune build #{self.name}.exe" },
-  "dependencies": {
-    "@esy-ocaml/reason": "^3.3.7",
-    "@opam/dune": "*",
-    "@opam/merlin": "3.2.2",
-    "@opam/yaml": "0.2.1",
-    "ocaml": "~4.6.0",
-    "refmterr": "*"
+  "name": "reyaml",
+  "version": "0.1.0",
+  "scripts": {
+    "clean": "bsb -clean-world",
+    "build": "bsb -make-world",
+    "watch": "bsb -make-world -w",
+    "test": "jest"
   },
-  "resolutions": {
-    "@opam/menhir": "20171013",
-    "@opam/re": "1.8.0"
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "bs-platform": "^4.0.8"
+  },
+  "dependencies": {
+    "@glennsl/bs-jest": "^0.4.5",
+    "yaml": "^1.0.3"
+  },
+  "jest": {
+    "testMatch": [
+      "**/*test.bs.js"
+    ]
   }
 }

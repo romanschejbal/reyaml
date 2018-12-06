@@ -1,4 +1,0 @@
-we: have
-been: included!
-lets: include another
-<<: deep-include.yml

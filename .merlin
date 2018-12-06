@@ -1,42 +1,11 @@
-EXCLUDE_QUERY_DIR
-B /Users/roman/.esy/3___________________________________________________________________/i/ocaml-4.6.9-ff9c6a38/lib/ocaml
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__ctypes-0.14.0-209be01c/lib/ctypes
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__fmt-0.8.5-6b463806/lib/fmt
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__integers-0.2.2-186c5ee3/lib/integers
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__logs-0.6.2-e2658b88/lib/logs
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__ocamlfind-1.8.0-b93b43d4/lib/bytes
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__parsexp-v0.11.0-7be592c5/lib/parsexp
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__ppx__sexp__conv-v0.11.2-d57d5df8/lib/ppx_sexp_conv/runtime-lib
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__result-1.3-645a87a5/lib/result
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__rresult-0.6.0-f4a28332/lib/rresult
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__sexplib-v0.11.0-3c53bebe/lib/sexplib
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__sexplib0-v0.11.0-29cda0ea/lib/sexplib0
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__uchar-0.0.2-46cd16d4/lib/uchar
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/bindings
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/bindings/types
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/c
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/ffi
-B /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/types
-B /Users/roman/workspace/switchfwd/reyaml/_esy/default/store/b/reyaml-1.0.0-0133be18/default/.ReYaml.eobjs
-S /Users/roman/.esy/3___________________________________________________________________/i/ocaml-4.6.9-ff9c6a38/lib/ocaml
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__ctypes-0.14.0-209be01c/lib/ctypes
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__fmt-0.8.5-6b463806/lib/fmt
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__integers-0.2.2-186c5ee3/lib/integers
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__logs-0.6.2-e2658b88/lib/logs
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__ocamlfind-1.8.0-b93b43d4/lib/bytes
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__parsexp-v0.11.0-7be592c5/lib/parsexp
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__ppx__sexp__conv-v0.11.2-d57d5df8/lib/ppx_sexp_conv/runtime-lib
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__result-1.3-645a87a5/lib/result
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__rresult-0.6.0-f4a28332/lib/rresult
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__sexplib-v0.11.0-3c53bebe/lib/sexplib
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__sexplib0-v0.11.0-29cda0ea/lib/sexplib0
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__uchar-0.0.2-46cd16d4/lib/uchar
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/bindings
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/bindings/types
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/c
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/ffi
-S /Users/roman/.esy/3___________________________________________________________________/i/opam__s__yaml-0.2.1-7d487bc3/lib/yaml/types
-S .
-FLG -w @a-4-29-40-41-42-44-45-48-58-59-60-40 -strict-sequence -strict-formats -short-paths -keep-locs
+####{BSB GENERATED: NO EDIT
+FLG -ppx /Users/roman/workspace/reyaml/node_modules/bs-platform/lib/bsppx.exe
+S /Users/roman/workspace/reyaml/node_modules/bs-platform/lib/ocaml
+B /Users/roman/workspace/reyaml/node_modules/bs-platform/lib/ocaml
+FLG -nostdlib -color always
+FLG -w -30-40+6+7+27+32..39+44+45+101
+S /Users/roman/workspace/reyaml/node_modules/@glennsl/bs-jest/lib/ocaml
+B /Users/roman/workspace/reyaml/node_modules/@glennsl/bs-jest/lib/ocaml
+S src
+B lib/bs/src
+####BSB GENERATED: NO EDIT}
