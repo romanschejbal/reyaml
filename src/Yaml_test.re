@@ -81,5 +81,5 @@ test("Empty yaml", () =>
   parse("") |> stringify |> expect |> toEqual("")
 );
 test("Only one comment yaml", () =>
-  parse("# comment") |> expect |> toEqual(Null)
+  parse("# comment") |> stringify |> expect |> toEqual("")
 );
