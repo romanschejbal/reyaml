@@ -15,32 +15,20 @@ let parse = str => {
   let json = yamlParse(str);
 
   let rec p = json => {
-    switch (Js.typeof(json)) {
-    | "boolean" => Yaml.Bool(Obj.magic(json): bool)
-    | "number" => Yaml.Float(Obj.magic(json): float)
-    | "string" => Yaml.String(Obj.magic(json): string)
-    | _ when Js.Array.isArray(json) =>
-      let arr: array(Js.Json.t) = Obj.magic(json);
-      let parsedArr = Array.map(p, arr) |> Array.to_list;
-      Yaml.Array(parsedArr);
-    | "object" =>
-      if (Js.isNullable(Obj.magic(json))) {
-        Yaml.Null;
-      } else {
-        let dict: Js.Dict.t(Js.Json.t) = Obj.magic(json);
-        let entries = Js.Dict.entries(dict);
-        let list =
-          Array.map(
-            ((key, value)) => {
-              let keyString: string = Obj.magic(key);
-              (keyString, p(value));
-            },
-            entries,
-          )
-          |> Array.to_list;
-        Yaml.Object(list);
-      }
-    | _ => failwith("This should never happen")
+    switch (Js.Json.classify(json)) {
+    | Js.Json.JSONFalse => Yaml.Bool(false)
+    | Js.Json.JSONTrue => Yaml.Bool(true)
+    | Js.Json.JSONNull => Yaml.Null
+    | Js.Json.JSONNumber(n) => Yaml.Float(n)
+    | Js.Json.JSONString(s) => Yaml.String(s)
+    | Js.Json.JSONArray(arr) =>
+      Yaml.Array(Array.map(p, arr) |> Array.to_list)
+    | Js.Json.JSONObject(o) =>
+      Yaml.Object(
+        Js.Dict.entries(o)
+        |> Array.map(((key, value)) => (key, p(value)))
+        |> Array.to_list,
+      )
     };
   };
   p(json);

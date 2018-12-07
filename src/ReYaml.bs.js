@@ -6,41 +6,41 @@ var Yaml = require("yaml");
 var $$Array = require("bs-platform/lib/js/array.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Js_dict = require("bs-platform/lib/js/js_dict.js");
-var Pervasives = require("bs-platform/lib/js/pervasives.js");
+var Js_json = require("bs-platform/lib/js/js_json.js");
 
 var Yaml$1 = /* module */[];
 
 function parse(str) {
   var json = Yaml.parse(str);
   var p = function (json) {
-    var match = typeof json;
-    switch (match) {
-      case "boolean" : 
-          return /* Bool */Block.__(0, [json]);
-      case "number" : 
-          return /* Float */Block.__(1, [json]);
-      case "string" : 
-          return /* String */Block.__(2, [json]);
-      default:
-        if (Array.isArray(json)) {
-          var parsedArr = $$Array.to_list($$Array.map(p, json));
-          return /* Array */Block.__(3, [parsedArr]);
-        } else if (match === "object") {
-          if (json == null) {
+    var match = Js_json.classify(json);
+    if (typeof match === "number") {
+      switch (match) {
+        case 0 : 
+            return /* Bool */Block.__(0, [false]);
+        case 1 : 
+            return /* Bool */Block.__(0, [true]);
+        case 2 : 
             return /* Null */0;
-          } else {
-            var entries = Js_dict.entries(json);
-            var list = $$Array.to_list($$Array.map((function (param) {
-                        return /* tuple */[
-                                param[0],
-                                p(param[1])
-                              ];
-                      }), entries));
-            return /* Object */Block.__(4, [list]);
-          }
-        } else {
-          return Pervasives.failwith("This should never happen");
-        }
+        
+      }
+    } else {
+      switch (match.tag | 0) {
+        case 0 : 
+            return /* String */Block.__(2, [match[0]]);
+        case 1 : 
+            return /* Float */Block.__(1, [match[0]]);
+        case 2 : 
+            return /* Object */Block.__(4, [$$Array.to_list($$Array.map((function (param) {
+                                  return /* tuple */[
+                                          param[0],
+                                          p(param[1])
+                                        ];
+                                }), Js_dict.entries(match[0])))]);
+        case 3 : 
+            return /* Array */Block.__(3, [$$Array.to_list($$Array.map(p, match[0]))]);
+        
+      }
     }
   };
   return p(json);
