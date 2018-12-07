@@ -145,7 +145,7 @@ Jest.test("Comments", (function (param) {
       }));
 
 Jest.test("Empty yaml", (function (param) {
-        return Jest.Expect[/* toEqual */12]("", Jest.Expect[/* expect */0](ReYaml.stringify(ReYaml.parse(""))));
+        return Jest.Expect[/* toEqual */12]("null\n", Jest.Expect[/* expect */0](ReYaml.stringify(ReYaml.parse(""))));
       }));
 
 Jest.test("Only one comment yaml", (function (param) {

@@ -12,7 +12,11 @@ module Yaml = {
 [@bs.module "yaml"] external yamlStringify: Js.Json.t => string = "stringify";
 
 let parse = str => {
-  let json = yamlParse(str);
+  let json =
+    switch (yamlParse(str)) {
+    | exception _ => Js.Json.null
+    | x => x
+    };
 
   let rec p = json => {
     switch (Js.Json.classify(json)) {

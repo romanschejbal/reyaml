@@ -11,7 +11,13 @@ var Js_json = require("bs-platform/lib/js/js_json.js");
 var Yaml$1 = /* module */[];
 
 function parse(str) {
-  var json = Yaml.parse(str);
+  var json;
+  try {
+    json = Yaml.parse(str);
+  }
+  catch (exn){
+    json = null;
+  }
   var p = function (json) {
     var match = Js_json.classify(json);
     if (typeof match === "number") {
