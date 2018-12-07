@@ -47,6 +47,12 @@ let stringify = yaml => {
       |> Js.Json.object_
     | Null => Js.Json.null
     };
-
-  s(yaml) |> yamlStringify;
+  s(yaml)
+  |> (
+    json =>
+      switch (Js.Json.classify(json)) {
+      | Js.Json.JSONNull => ""
+      | _ => yamlStringify(json)
+      }
+  );
 };

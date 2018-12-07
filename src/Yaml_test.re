@@ -78,7 +78,7 @@ test("Comments", () =>
 );
 
 test("Empty yaml", () =>
-  parse("") |> stringify |> expect |> toEqual("null\n")
+  parse("") |> stringify |> expect |> toEqual("")
 );
 test("Only one comment yaml", () =>
   parse("# comment") |> expect |> toEqual(Null)
