@@ -4,12 +4,6 @@ external readFileSync:
   (~name: string, [@bs.string] [ | `utf8 | `ascii]) => string =
   "";
 
-let (|?>) = (x, d) =>
-  switch (x) {
-  | None => d
-  | Some(x) => x
-  };
-
 let getFilename = yargs =>
   Js.Dict.unsafeGet(yargs, "_")
   |> (
@@ -72,8 +66,21 @@ let rec process = (~vars=Js.Dict.empty(), yaml) => {
 
 let start = () => {
   let file = readFileSync(~name=getFilename(yargs), `utf8);
-  let yaml = Yaml.parse(file);
-  let processed = process(~vars=yargs, yaml);
-  Yaml.stringify(processed) |> Js.log;
-  ();
+  let split = Js.String.split(Obj.magic([%bs.re "/^---\\n/gm"]), file);
+  let yamls = Array.map(Yaml.parse, split);
+  let processed = Array.map(process(~vars=yargs), yamls);
+  Array.fold_left(
+    (final, yaml) =>
+      Yaml.stringify(yaml)
+      |> (
+        str =>
+          switch (final) {
+          | "" => str
+          | _ => final ++ "---\n" ++ str
+          }
+      ),
+    "",
+    processed,
+  )
+  |> Js.log;
 };
