@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-deployment
+  labels:
+    app: redis
+spec:
+  serviceName: redis
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      we: original value
+      <|: sample.import.yml
+      containers:
+        - name: redis
+          image: redis
+          ports:
+            - name: redis-port
+              containerPort: 6379
+              protocol: TCP
+          volumeMounts:
+            - name: redis-persistent-storage
+              mountPath: /data
+          <|: sample.import.yml
+      volumes:
+        - name: redis-persistent-storage
+          gcePersistentDisk:
+            pdName: redis-disk
+            fsType: ext4
+      # - name: redis-persistent-storage
+      #   persistentVolumeClaim:
+      #     claimName: redis-claim

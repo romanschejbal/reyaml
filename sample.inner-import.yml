@@ -1,0 +1,2 @@
+ola: hello $name
+<|: sample.$env.yml
