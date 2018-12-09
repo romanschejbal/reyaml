@@ -64,7 +64,13 @@ let rec process = (~vars=Js.Dict.empty(), yaml) => {
       ),
     )
   | `Array(values) => `Array(List.map(process(~vars), values))
-  | `String(s) => `String(replaceVariables(vars, s))
+  | `String(s) =>
+    let replaced = replaceVariables(vars, s);
+    switch (float_of_string(replaced)) {
+    | number when replaced !== s => `Float(number)
+    | exception _ => `String(replaced)
+    | _ => yaml
+    };
   | x => x
   };
 };
