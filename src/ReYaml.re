@@ -15,8 +15,14 @@ let getFilenames = yargs =>
 let import = filename => {
   let included = readFileSync(~name=filename, `utf8) |> Yaml.parse;
   switch (included) {
+  | `Null => included
   | `Object(_) => included
-  | _ => failwith("Only objects are allowed as imports")
+  | _ =>
+    failwith(
+      "Error when importing: "
+      ++ filename
+      ++ " - only objects are allowed as imports",
+    )
   };
 };
 
@@ -83,7 +89,16 @@ let start = () => {
       let file = readFileSync(~name=filename, `utf8);
       let split = Js.String.split(Obj.magic([%bs.re "/^---\\n/gm"]), file);
       let yamls = Array.map(Yaml.parse, split);
-      let processed = Array.map(process(~vars=yargs), yamls);
+      let processed =
+        Array.map(process(~vars=yargs), yamls)
+        |> Array.to_list
+        |> List.filter(
+             fun
+             | `Null => false
+             | `Object([]) => false
+             | _ => true,
+           )
+        |> Array.of_list;
       Array.fold_left(
         (final, yaml) =>
           Yaml.stringify(yaml)
