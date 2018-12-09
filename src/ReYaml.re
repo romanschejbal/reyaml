@@ -4,13 +4,12 @@ external readFileSync:
   (~name: string, [@bs.string] [ | `utf8 | `ascii]) => string =
   "";
 
-let getFilename = yargs =>
+let getFilenames = yargs =>
   Js.Dict.unsafeGet(yargs, "_")
   |> (
     fun
     | [||] => failwith("Filename not provided")
-    | [|file|] => file
-    | _ => failwith("Too many filenames provided")
+    | files => files
   );
 
 let import = filename => {
@@ -64,23 +63,42 @@ let rec process = (~vars=Js.Dict.empty(), yaml) => {
   };
 };
 
+let (+/) = Node.Path.join2;
+
+[@bs.val] [@bs.scope "process"] external chdir: string => unit = "chdir";
+
 let start = () => {
-  let file = readFileSync(~name=getFilename(yargs), `utf8);
-  let split = Js.String.split(Obj.magic([%bs.re "/^---\\n/gm"]), file);
-  let yamls = Array.map(Yaml.parse, split);
-  let processed = Array.map(process(~vars=yargs), yamls);
-  Array.fold_left(
-    (final, yaml) =>
-      Yaml.stringify(yaml)
-      |> (
-        str =>
-          switch (final) {
-          | "" => str
-          | _ => final ++ "---\n" ++ str
-          }
-      ),
-    "",
-    processed,
-  )
-  |> Js.log;
+  let originalCwd = Node.Process.cwd();
+  let filenames = getFilenames(yargs);
+  Array.mapi(
+    (i, filename) => {
+      if (i > 0) {
+        Js.log("---");
+      };
+      Js.log("# generated from: " ++ filename);
+      let newCwd = Node.Path.dirname(originalCwd +/ filename);
+      chdir(newCwd);
+      let filename = Node.Path.basename(filename);
+
+      let file = readFileSync(~name=filename, `utf8);
+      let split = Js.String.split(Obj.magic([%bs.re "/^---\\n/gm"]), file);
+      let yamls = Array.map(Yaml.parse, split);
+      let processed = Array.map(process(~vars=yargs), yamls);
+      Array.fold_left(
+        (final, yaml) =>
+          Yaml.stringify(yaml)
+          |> (
+            str =>
+              switch (final) {
+              | "" => str
+              | _ => final ++ "---\n" ++ str
+              }
+          ),
+        "",
+        processed,
+      )
+      |> Js.log;
+    },
+    filenames,
+  );
 };
