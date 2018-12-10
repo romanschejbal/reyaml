@@ -1,0 +1,3 @@
+(executable
+  (name ReYaml)
+  (libraries yaml)) 
