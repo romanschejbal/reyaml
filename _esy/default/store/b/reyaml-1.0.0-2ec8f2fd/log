@@ -1,5 +1,0 @@
-# dune build ReYaml.exe
-# OCAMLPARAM: unset
-$ /usr/bin/getconf _NPROCESSORS_ONLN > /tmp/dune995aee.output 2> /dev/null
-$ /Users/roman/.esy/3___________________________________________________________________/i/opam__s__ocamlfind-1.8.0-b93b43d4/bin/ocamlfind printconf path > /tmp/dune46565e.output
-$ /Users/roman/.esy/3___________________________________________________________________/i/ocaml-4.6.9-ff9c6a38/bin/ocamlc.opt -config > /tmp/dune3dad7b.output
