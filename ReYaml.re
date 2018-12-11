@@ -1,22 +1,32 @@
-let readFileSync = (~_name, _encoding) => "das content";
+let readFile = filename => {
+  let ic = open_in(filename);
+  let len = in_channel_length(ic);
+  let str = really_input_string(ic, len);
+  close_in(ic);
+  str;
+};
 
-let getFilenames = _yargs =>
-  [|"sample.yml"|]
+let readYamls = str =>
+  Str.split(Str.regexp("^---$"), str)
+  |> List.map(str =>
+       Yaml.of_string(str)
+       |> (
+         fun
+         | Ok(r) => r
+         | Error(e) => Rresult.R.failwith_error_msg(Error(e))
+       )
+     );
+
+let getFilenamesFromArgs = args =>
+  Array.sub(args, 1, Array.length(args) - 1)
   |> (
     fun
     | [||] => failwith("Filename not provided")
     | files => files
   );
 
-let import = filename => {
-  let included =
-    readFileSync(~_name=filename, `utf8)
-    |> Yaml.of_string
-    |> (
-      fun
-      | Ok(r) => r
-      | Error(e) => Rresult.R.failwith_error_msg(Error(e))
-    );
+let importOne = filename => {
+  let included = readFile(filename) |> readYamls |> List.hd;
   switch (included) {
   | `Null => included
   | `O(_) => included
@@ -28,100 +38,98 @@ let import = filename => {
     )
   };
 };
-/*
- let replaceVariables = (vars, str) => {
-   let vars = Js.Dict.entries(vars);
-   Array.fold_left(
-     (final, entry) =>
-       switch (entry) {
-       | ("_", _) => final
-       | (key, value) => Js.String.replace("$" ++ key, value, final)
-       },
-     str,
-     vars,
-   );
- };
 
- let rec process = (~vars=Js.Dict.empty(), yaml) =>
-   switch (yaml) {
-   | `Object(list) =>
-     `Object(
-       List.fold_right(
-         (next, final) =>
-           switch (next) {
-           | ("<|", `String(filename)) =>
-             let imported =
-               replaceVariables(vars, filename)
-               |> import
-               |> process(~vars)
-               |> (
-                 fun
-                 | `Object(list) => list
-                 | _ => []
-               );
-             List.append(imported, final);
-           | (key, value) => [(key, process(~vars, value)), ...final]
-           },
-         list,
-         [],
-       ),
-     )
-   | `Array(values) => `Array(List.map(process(~vars), values))
-   | `String(s) =>
-     let replaced = replaceVariables(vars, s);
-     switch (float_of_string(replaced)) {
-     | number when replaced !== s => `Float(number)
-     | exception _ => `String(replaced)
-     | _ => yaml
-     };
-   | x => x
-   };
+let replaceVariables = (vars, str) =>
+  Array.fold_left(
+    (final, entry) =>
+      switch (entry) {
+      | [key, value] =>
+        Str.global_replace(Str.regexp_string("$" ++ key), value, final)
+      | _ => final
+      },
+    str,
+    vars,
+  );
 
- let (+/) = Node.Path.join2;
+let rec process = (~vars=[||], yaml) =>
+  switch (yaml) {
+  | `O(list) =>
+    `O(
+      List.fold_right(
+        (next, final) =>
+          switch (next) {
+          | ("<|", `String(filename)) =>
+            let imported =
+              replaceVariables(vars, filename)
+              |> importOne
+              |> process(~vars)
+              |> (
+                fun
+                | `O(list) => list
+                | _ => []
+              );
+            List.append(imported, final);
+          | (key, value) => [(key, process(~vars, value)), ...final]
+          },
+        list,
+        [],
+      ),
+    )
+  | `A(values) => `A(List.map(process(~vars), values))
+  | `String(s) =>
+    let replaced = replaceVariables(vars, s);
+    switch (float_of_string(replaced)) {
+    | number when replaced !== s => `Float(number)
+    | exception _ => `String(replaced)
+    | _ => yaml
+    };
+  | x => x
+  };
 
- [@bs.val] [@bs.scope "process"] external chdir: string => unit = "chdir";
+let (+/) = Filename.concat;
 
- let start = () => {
-   let originalCwd = Node.Process.cwd();
-   let filenames = getFilenames(yargs);
-   Array.mapi(
-     (i, filename) => {
-       if (i > 0) {
-         Js.log("---");
-       };
-       Js.log("# generated from: " ++ filename);
-       let newCwd = Node.Path.dirname(originalCwd +/ filename);
-       chdir(newCwd);
-       let filename = Node.Path.basename(filename);
+let start = () => {
+  let args = Sys.argv;
+  let vars =
+    Unix.environment() |> Array.map(Str.split(Str.regexp_string("=")));
+  let originalCwd = Sys.getcwd();
+  let filenames = getFilenamesFromArgs(args);
+  Array.mapi(
+    (i, filename) => {
+      if (i > 0) {
+        print_endline("---");
+      };
+      print_endline("# generated from: " ++ filename);
+      let newCwd = Filename.dirname(originalCwd +/ filename);
+      Sys.chdir(newCwd);
+      let filename = Filename.basename(filename);
+      let yamls = readFile(filename) |> readYamls;
+      let processed =
+        List.map(process(~vars), yamls)
+        |> List.filter(
+             fun
+             | `Null => false
+             | `O([]) => false
+             | _ => true,
+           )
+        |> Array.of_list;
+      Array.fold_left(
+        (final, yaml) =>
+          Yaml.to_string_exn(yaml)
+          |> (
+            str =>
+              switch (final) {
+              | "" => str
+              | _ => final ++ "---\n" ++ str
+              }
+          ),
+        "",
+        processed,
+      )
+      |> print_endline;
+    },
+    filenames,
+  );
+};
 
-       let file = readFileSync(~name=filename, `utf8);
-       let split = Js.String.split(Obj.magic([%bs.re "/^---\\n/gm"]), file);
-       let yamls = Array.map(Yaml.parse, split);
-       let processed =
-         Array.map(process(~vars=yargs), yamls)
-         |> Array.to_list
-         |> List.filter(
-              fun
-              | `Null => false
-              | `Object([]) => false
-              | _ => true,
-            )
-         |> Array.of_list;
-       Array.fold_left(
-         (final, yaml) =>
-           Yaml.stringify(yaml)
-           |> (
-             str =>
-               switch (final) {
-               | "" => str
-               | _ => final ++ "---\n" ++ str
-               }
-           ),
-         "",
-         processed,
-       )
-       |> Js.log;
-     },
-     filenames,
-   );
- }; */
+start();
