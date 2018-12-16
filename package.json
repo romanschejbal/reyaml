@@ -1,6 +1,6 @@
 {
   "name": "reyaml",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
@@ -12,6 +12,10 @@
   "bin": {
     "reyaml": "./cli.js"
   },
+  "files": [
+    "dist",
+    "cli.js"
+  ],
   "keywords": [
     "BuckleScript"
   ],
