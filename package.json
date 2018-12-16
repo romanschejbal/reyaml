@@ -1,14 +1,16 @@
 {
   "name": "reyaml",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "scripts": {
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
     "watch": "bsb -make-world -w",
-    "test": "jest"
+    "test": "jest",
+    "webpack": "webpack --target=node --mode=development index.js",
+    "prepack": "yarn build && yarn webpack"
   },
   "bin": {
-    "reyaml": "./index.js"
+    "reyaml": "./cli.js"
   },
   "keywords": [
     "BuckleScript"
@@ -16,7 +18,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "^4.0.8"
+    "bs-platform": "^4.0.8",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2"
   },
   "dependencies": {
     "@glennsl/bs-jest": "^0.4.5",
