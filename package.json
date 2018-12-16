@@ -7,6 +7,9 @@
     "watch": "bsb -make-world -w",
     "test": "jest"
   },
+  "bin": {
+    "reyaml": "./index.js"
+  },
   "keywords": [
     "BuckleScript"
   ],
